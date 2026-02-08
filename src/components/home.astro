@@ -6,33 +6,11 @@ import SkillsList from "../React/SkillsList.tsx";
 
 <section class="text-[var(--white)] mt-12 md:mt-0" id="home">
   <div class="max-w-5xl mx-auto space-y-8 md:py-36 pb-14">
-    <div class="text-left space-y-4">
-      <p class="text-md md:text-lg text-[var(--white-icon)] shiny-white">
-        Hi, I'm Jacobo Rodriguez
-      </p>
-      <div
-        class="flex flex-col lg:flex-row-reverse lg:items-center md:gap-6"
-      >
-        <div
-          class="flex flex-col lg:flex-row lg:items-center space-y-4 lg:space-y-0 lg:space-x-8 md:gap-4 flex-1"
-        >
-          <h1
-            class="text-[var(--white)] text-5xl md:text-6xl font-medium text-pretty leading-none"
-          >
-            Game/SFX Design - <br /> Interactive Systems Developer
-          </h1>
-          <p class="text-md md:text-2xl text-[var(--white-icon)]">
-            Creating experiences where <span class="text-[var(--sec)] shiny-sec"
-              >logic, sound, and design</span
-            > meet. Solving problems with <span class="text-[var(--sec)] shiny-sec"
-              >interactive products</span
-            >.
-          </p>
-        </div>
-
-        <div class="flex justify-start lg:justify-end lg:flex-shrink-0">
+    <div class="text-left space-y-6">
+      <div class="flex flex-row items-center gap-8">
+        <div class="flex flex-shrink-0">
           <div
-            class="size-28 md:size-32 lg:size-36 rounded-2xl overflow-hidden border border-[var(--white-icon-tr)] bg-[#1414149c] flex items-center justify-center"
+            class="size-56 md:size-64 lg:size-72 rounded-2xl overflow-hidden border border-[var(--white-icon-tr)] bg-[#1414149c] flex items-center justify-center"
           >
             <img
               src="/pfp.png"
@@ -43,7 +21,25 @@ import SkillsList from "../React/SkillsList.tsx";
             />
           </div>
         </div>
+
+        <h1
+          class="text-[var(--white)] text-5xl md:text-6xl font-medium text-pretty leading-none"
+        >
+          <span class="text-[var(--sec)] shiny-sec"
+            >Game & Interactive Systems Developer</span
+          ><br />
+          <span class="text-[var(--white-icon)] text-2xl md:text-3xl font-normal"
+            >with a focus on Sound Design (SFX)</span
+          >
+        </h1>
       </div>
+
+      <p class="text-md md:text-2xl text-[var(--white-icon)]">
+        I design and develop games and interactive systems where
+        <span class="text-[var(--sec)] shiny-sec">code, sound, and design</span>
+        work together to create
+        <span class="text-[var(--sec)] shiny-sec">meaningful experiences</span>.
+      </p>
       <div class="flex justify-start gap-2 pt-3 md:pt-6">
         <a
           target="_blank"
