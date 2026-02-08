@@ -1,19 +1,14 @@
 ---
 const technologies = [
-  "astro",
-  "vue",
-  "react",
-  "typeScript",
-  "tailwindcss",
-  "next",
-  "nodejs",
-  "HTML5",
-  "CSS3",
-  "javaScript",
-  "git",
-  "supabase",
-  "mysql",
-  "bash",
+  { file: "react", label: "React" },
+  { file: "tailwindcss", label: "TailwindCSS" },
+  { file: "nodejs", label: "Node.js" },
+  { file: "javaScript", label: "JavaScript" },
+  { file: "git", label: "Git" },
+  { file: "bash", label: "Bash" },
+  { file: "unity-svgrepo-com", label: "Unity" },
+  { file: "icons8-reaper", label: "Reaper" },
+  { file: "vite-svgrepo-com", label: "Vite" },
 ];
 ---
 
@@ -32,15 +27,15 @@ const technologies = [
       [...technologies, ...technologies, ...technologies].map((tech) => (
         <div class="flex items-center gap-2 group transition-all duration-300">
           <img
-            src={`/svg/${tech}.svg`}
-            alt={tech}
+            src={`/svg/${tech.file}.svg`}
+            alt={tech.label}
             class="h-7 w-auto object-contain transition-transform group-hover:scale-110 opacity-60"
             width="30"
             height="30"
             loading="lazy"
           />
           <span class="text-lg font-medium text-[var(--white-icon)]">
-            {tech.charAt(0).toUpperCase() + tech.slice(1)}
+            {tech.label}
           </span>
         </div>
       ))

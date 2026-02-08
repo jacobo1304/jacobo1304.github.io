@@ -48,6 +48,13 @@ const SkillsList = () => {
     ],
   };
 
+  const imageSlotLabels: Record<string, string> = {
+    "Game Development (Unity / C#)": "Image slot",
+    "Interactive Systems Development (p5.js, openframeworks, react)":
+      "Image slot",
+    "SFX Designer (Reaper, FL Studio)": "Image slot",
+  };
+
   const toggleItem = (item: string) => {
     setOpenItem(openItem === item ? null : item);
   };
@@ -88,10 +95,17 @@ const SkillsList = () => {
               <div
                 className={`transition-all duration-300 px-4 ${
                   openItem === category
-                    ? "max-h-[500px] pb-4 opacity-100"
+                    ? "max-h-[700px] pb-4 opacity-100"
                     : "max-h-0 opacity-0"
                 }`}
               >
+                <div className="pt-2">
+                  <div className="w-full h-24 rounded-xl border border-[var(--white-icon-tr)] bg-[#101010] flex items-center justify-center">
+                    <span className="text-[var(--white-icon)] text-xs">
+                      {imageSlotLabels[category] ?? "Image slot"}
+                    </span>
+                  </div>
+                </div>
                 <ul className="space-y-2 text-[var(--white-icon)] text-sm">
                   {items.map((item, index) => (
                     <div key={index} className="flex items-center">

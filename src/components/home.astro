@@ -11,20 +11,32 @@ import SkillsList from "../React/SkillsList.tsx";
         Hi, I'm Jacobo Rodriguez
       </p>
       <div
-        class="flex flex-col lg:flex-row lg:items-center space-y-4 lg:space-y-0 lg:space-x-8 md:gap-4"
+        class="flex flex-col lg:flex-row lg:items-center md:gap-6"
       >
-        <h1
-          class="text-[var(--white)] text-5xl md:text-6xl font-medium text-pretty leading-none"
+        <div
+          class="flex flex-col lg:flex-row lg:items-center space-y-4 lg:space-y-0 lg:space-x-8 md:gap-4 flex-1"
         >
-          Game/SFX Design - <br /> Interactive Systems Developer
-        </h1>
-        <p class="text-md md:text-2xl text-[var(--white-icon)]">
-          Creating experiences where <span class="text-[var(--sec)] shiny-sec"
-            >logic, sound, and design</span
-          > meet. Solving problems with <span class="text-[var(--sec)] shiny-sec"
-            >interactive products</span
-          >.
-        </p>
+          <h1
+            class="text-[var(--white)] text-5xl md:text-6xl font-medium text-pretty leading-none"
+          >
+            Game/SFX Design - <br /> Interactive Systems Developer
+          </h1>
+          <p class="text-md md:text-2xl text-[var(--white-icon)]">
+            Creating experiences where <span class="text-[var(--sec)] shiny-sec"
+              >logic, sound, and design</span
+            > meet. Solving problems with <span class="text-[var(--sec)] shiny-sec"
+              >interactive products</span
+            >.
+          </p>
+        </div>
+
+        <div class="flex justify-start lg:justify-end lg:flex-shrink-0">
+          <div
+            class="size-28 md:size-32 lg:size-36 rounded-2xl overflow-hidden border border-[var(--white-icon-tr)] bg-[#1414149c] flex items-center justify-center"
+          >
+            <span class="text-[var(--white-icon)] text-xs md:text-sm">Photo</span>
+          </div>
+        </div>
       </div>
       <div class="flex justify-start gap-2 pt-3 md:pt-6">
         <a
