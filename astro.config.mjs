@@ -6,6 +6,7 @@ import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://www.jacobo1304.github.io',
   integrations: [tailwind(), react()],
   vite: {
     resolve: {
@@ -19,6 +20,7 @@ export default defineConfig({
   build: {
     inlineStylesheets: "auto",
   },
+  
   server: {
     host: true,
     port: 4321,
