@@ -8,6 +8,11 @@ import react from "@astrojs/react";
 export default defineConfig({
   site: 'https://www.jacobo1304.github.io',
   integrations: [tailwind(), react()],
+  image: {
+    service: {
+      entrypoint: "astro/assets/services/noop",
+    },
+  },
   vite: {
     resolve: {
       alias: {
