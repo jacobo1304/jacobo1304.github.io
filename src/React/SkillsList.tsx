@@ -55,6 +55,13 @@ const SkillsList = () => {
     "SFX Designer (Reaper, FL Studio)": "Image slot",
   };
 
+  const imageSlotSrc: Record<string, string> = {
+    "Game Development (Unity / C#)": "/Coding1.jpg",
+    "Interactive Systems Development (p5.js, openframeworks, react)":
+      "/FlockingInteractivo.png",
+    "SFX Designer (Reaper, FL Studio)": "/TocandoPiano.jpg",
+  };
+
   const toggleItem = (item: string) => {
     setOpenItem(openItem === item ? null : item);
   };
@@ -99,13 +106,6 @@ const SkillsList = () => {
                     : "max-h-0 opacity-0"
                 }`}
               >
-                <div className="pt-2">
-                  <div className="w-full h-24 rounded-xl border border-[var(--white-icon-tr)] bg-[#101010] flex items-center justify-center">
-                    <span className="text-[var(--white-icon)] text-xs">
-                      {imageSlotLabels[category] ?? "Image slot"}
-                    </span>
-                  </div>
-                </div>
                 <ul className="space-y-2 text-[var(--white-icon)] text-sm">
                   {items.map((item, index) => (
                     <div key={index} className="flex items-center">
@@ -114,6 +114,26 @@ const SkillsList = () => {
                     </div>
                   ))}
                 </ul>
+
+                <div className="pt-3">
+                  <div className="w-full h-24 rounded-xl border border-[var(--white-icon-tr)] bg-[#101010] overflow-hidden">
+                    {imageSlotSrc[category] ? (
+                      <img
+                        src={imageSlotSrc[category]}
+                        alt={category}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="text-[var(--white-icon)] text-xs">
+                          {imageSlotLabels[category] ?? "Image slot"}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </li>
