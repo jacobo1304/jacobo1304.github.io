@@ -16,13 +16,14 @@ import SkillsList from "../React/SkillsList.tsx";
         <h1
           class="text-[var(--white)] text-5xl md:text-6xl font-medium text-pretty leading-none"
         >
-          Software <br /> Developer
+          Game/SFX Design - <br /> Interactive Systems Developer
         </h1>
         <p class="text-md md:text-2xl text-[var(--white-icon)]">
-          Transforming ideas into interactive and seamless digital experiences
-          with cutting-edge <span class="text-[var(--sec)] shiny-sec"
-            >frontend</span
-          > development.
+          Creating experiences where <span class="text-[var(--sec)] shiny-sec"
+            >logic, sound, and design</span
+          > meet. Solving problems with <span class="text-[var(--sec)] shiny-sec"
+            >interactive products</span
+          >.
         </p>
       </div>
       <div class="flex justify-start gap-2 pt-3 md:pt-6">
@@ -90,7 +91,7 @@ import SkillsList from "../React/SkillsList.tsx";
       >
         <LetterGlitch
           client:load
-          glitchColors={["#5e4491", "#A476FF", "#241a38"]}
+          glitchColors={["#6b2e00", "#ffa84d", "#2a1400"]}
           glitchSpeed={33}
           centerVignette={false}
           outerVignette={true}
@@ -103,7 +104,12 @@ import SkillsList from "../React/SkillsList.tsx";
 
 <style is:global>
   .shiny-sec {
-    background: linear-gradient(135deg, #a476ff 25%, #eee5ff 50%, #a476ff 75%);
+    background: linear-gradient(
+      135deg,
+      var(--sec) 25%,
+      #fff1e0 50%,
+      var(--sec) 75%
+    );
     background-size: 400% 100%;
     -webkit-background-clip: text;
     background-clip: text;

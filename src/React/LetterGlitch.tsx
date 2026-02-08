@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 
 const LetterGlitch = ({
-  glitchColors = ["#5e4491", "#A476FF", "#241a38"],
+  glitchColors = ["#6b2e00", "#ffa84d", "#2a1400"],
   glitchSpeed = 33,
   centerVignette = false,
   outerVignette = false,
