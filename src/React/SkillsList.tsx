@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const CategoryIcons = {
-  "Game Development (Unity / C#)": (
+  "Games": (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -11,7 +11,7 @@ const CategoryIcons = {
       <path d="M7.5 9C6.11929 9 5 10.1193 5 11.5V12.5C5 13.8807 6.11929 15 7.5 15H8.58579L10.2929 16.7071C10.9229 17.3371 12 16.891 12 16V15H12.5L14.2929 16.7929C14.9229 17.4229 16 16.9768 16 16.0858V15H16.5C17.8807 15 19 13.8807 19 12.5V11.5C19 10.1193 17.8807 9 16.5 9H7.5ZM7.5 7H16.5C18.9853 7 21 9.01472 21 11.5V12.5C21 14.9853 18.9853 17 16.5 17H16V18.0858C16 19.7584 13.9771 20.5966 12.7929 19.4142L11.3787 18H11.2071C10.8095 18 10.4281 17.842 10.1464 17.5607L7.58579 15H7.5C5.01472 15 3 13.9853 3 11.5V11.5C3 9.01472 5.01472 7 7.5 7ZM7.5 11H9.5V13H7.5V11ZM14.5 11H16.5V13H14.5V11Z"></path>
     </svg>
   ),
-  "Interactive Systems Dev (p5.js, react)": (
+  "Interactive Experiences": (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -29,7 +29,7 @@ const CategoryIcons = {
       <path d="M8 13l8 4" />
     </svg>
   ),
-  "SFX Designer (Reaper, FL Studio)": (
+  "Music and SFX": (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -45,29 +45,29 @@ const SkillsList = () => {
   const [openItem, setOpenItem] = useState<string | null>(null);
 
   const skills = {
-    "Game Development (Unity / C#)": [
-      "Creation of 2D video games and playable prototypes, focused on mechanics, states, probabilities, and player experience.",
+    "Games": [
+      "Creation of 2D and 3D video games and playable prototypes, focused on Programming, and game design.",
     ],
-    "Interactive Systems Dev (p5.js, react)": [
-      "Design and development of real-time interactive systems, combining logic, networks, and user experience.",
+    "Interactive Experiences": [
+      "Design and development of real-time interactive systems, generative visuals, and VR and AR experiences in unity.",
     ],
-    "SFX Designer (Reaper, FL Studio)": [
-      "Sound design for games including foley recording and game OST making.",
+    "Music and SFX": [
+      "Sound design for games including foley recording and game OST composing and producing. Using tools as Reaper, VCV rack, and Sony Vegas/Premiere for video editing.",
     ],
   };
 
   const imageSlotLabels: Record<string, string> = {
-    "Game Development (Unity / C#)": "Image slot",
-    "Interactive Systems Dev (p5.js, react)":
+    "Games": "Image slot",
+    "Interactive Experiences":
       "Image slot",
-    "SFX Designer (Reaper, FL Studio)": "Image slot",
+    "Music and SFX": "Image slot",
   };
 
   const imageSlotSrc: Record<string, string> = {
-    "Game Development (Unity / C#)": "/Coding1.jpg",
-    "Interactive Systems Dev (p5.js, react)":
+    "Games": "/Coding1.jpg",
+    "Interactive Experiences":
       "/FlockingInteractivo.png",
-    "SFX Designer (Reaper, FL Studio)": "/TocandoPiano.jpg",
+    "Music and SFX": "/TocandoPiano.jpg",
   };
 
   const toggleItem = (item: string) => {
