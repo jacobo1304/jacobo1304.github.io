@@ -1,31 +1,33 @@
 ---
 const technologies = [
-  { file: "react", label: "React" },
-  { file: "tailwindcss", label: "TailwindCSS" },
-  { file: "nodejs", label: "Node.js" },
-  { file: "javaScript", label: "JavaScript" },
-  { file: "git", label: "Git" },
-  { file: "bash", label: "Bash" },
-  { file: "unity-svgrepo-com", label: "Unity" },
-  { file: "icons8-reaper", label: "Reaper" },
-  { file: "vite-svgrepo-com", label: "Vite" },
+  { file: "react", label: "React", level: 3 },
+  { file: "tailwindcss", label: "TailwindCSS", level: 2 },
+  { file: "nodejs", label: "Node.js", level: 2 },
+  { file: "javaScript", label: "JavaScript", level: 3 },
+  { file: "git", label: "Git", level: 4 },
+  { file: "bash", label: "Bash", level: 4 },
+  { file: "unity-svgrepo-com", label: "Unity", level: 5 },
+  { file: "icons8-reaper", label: "Reaper", level: 5 },
+  { file: "vite-svgrepo-com", label: "Vite", level: 3 },
 ];
 ---
 
 <div class="relative overflow-x-hidden py-8">
   <div
     class="pointer-events-none absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[var(--background)] to-transparent z-20"
-  >
-  </div>
+  ></div>
   <div
     class="pointer-events-none absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[var(--background)] to-transparent z-20"
-  >
-  </div>
+  ></div>
 
-  <div class="flex animate-scroll hover:animate-paused gap-12 md:gap-20 w-max">
+  <div id="logo-wall-track" class="flex animate-scroll gap-12 md:gap-20 w-max">
     {
       [...technologies, ...technologies, ...technologies].map((tech) => (
-        <div class="flex items-center gap-2 group transition-all duration-300">
+        <div
+          class="tech-item flex items-center gap-2 group transition-all duration-300 cursor-pointer select-none"
+          data-level={tech.level}
+          data-label={tech.label}
+        >
           <img
             src={`/svg/${tech.file}.svg`}
             alt={tech.label}
@@ -43,22 +45,153 @@ const technologies = [
   </div>
 </div>
 
+<!-- Stars popup -->
+<div id="tech-popup" aria-hidden="true">
+  <span id="popup-name"></span>
+  <div id="popup-stars"></div>
+  <span id="popup-level"></span>
+</div>
+
 <style is:global>
   @keyframes scroll {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
+    from { transform: translateX(0); }
+    to   { transform: translateX(-33.333%); }
   }
   .animate-scroll {
     animation: scroll 60s linear infinite;
   }
-
   @media (min-width: 768px) {
-    .animate-scroll {
-      animation-duration: 50s;
-    }
+    .animate-scroll { animation-duration: 50s; }
+  }
+
+  /* ── Popup ── */
+  #tech-popup {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 18px 8px;
+    background: rgba(18, 18, 18, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 14px));
+    transition: opacity 0.22s ease;
+    z-index: 9999;
+    white-space: nowrap;
+  }
+  #tech-popup.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #popup-name {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  #popup-stars {
+    display: flex;
+    gap: 4px;
+  }
+  #popup-stars .star {
+    font-size: 1.45rem;
+    line-height: 1;
+  }
+  #popup-stars .star.filled { color: #FFB800; }
+  #popup-stars .star.empty  { color: #3a3a3a; }
+  #popup-level {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.38);
   }
 </style>
+
+<script>
+  const LEVEL_LABELS: Record<number, string> = {
+    1: "Beginner",
+    2: "Basic",
+    3: "Intermediate",
+    4: "Advanced",
+    5: "Expert",
+  };
+
+  const popup      = document.getElementById("tech-popup")!;
+  const popupName  = document.getElementById("popup-name")!;
+  const popupStars = document.getElementById("popup-stars")!;
+  const popupLevel = document.getElementById("popup-level")!;
+  const track      = document.getElementById("logo-wall-track")!;
+
+  let activeItem: HTMLElement | null = null;
+  let hideTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function positionPopup(item: HTMLElement) {
+    const r = item.getBoundingClientRect();
+    popup.style.left = `${r.left + r.width / 2}px`;
+    popup.style.top  = `${r.top}px`;
+  }
+
+  function showPopup(item: HTMLElement) {
+    if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+
+    const level = parseInt(item.dataset.level ?? "0");
+    const label = item.dataset.label ?? "";
+
+    popupName.textContent  = label;
+    popupLevel.textContent = LEVEL_LABELS[level] ?? "";
+    popupStars.innerHTML   = Array.from({ length: 5 }, (_, i) =>
+      `<span class="star ${i < level ? "filled" : "empty"}">★</span>`
+    ).join("");
+
+    positionPopup(item);
+    popup.classList.add("visible");
+    track.style.animationPlayState = "paused";
+    activeItem = item;
+  }
+
+  function hidePopup() {
+    popup.classList.remove("visible");
+    track.style.animationPlayState = "running";
+    activeItem = null;
+  }
+
+  function scheduleHide() {
+    hideTimer = setTimeout(hidePopup, 120);
+  }
+
+  // Click / hover on item
+  document.querySelectorAll<HTMLElement>(".tech-item").forEach((item) => {
+    // Click: toggle popup
+    item.addEventListener("click", (e) => {
+      e.stopPropagation();
+      activeItem === item ? hidePopup() : showPopup(item);
+    });
+
+    // Hover: show popup
+    item.addEventListener("mouseenter", () => {
+      if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+      showPopup(item);
+    });
+
+    // Mouse leave item → schedule hide
+    item.addEventListener("mouseleave", () => {
+      scheduleHide();
+    });
+  });
+
+  // Mouse enter popup → cancel hide
+  popup.addEventListener("mouseenter", () => {
+    if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+  });
+
+  // Mouse leave popup → hide
+  popup.addEventListener("mouseleave", scheduleHide);
+
+  // Click outside → hide
+  document.addEventListener("click", (e) => {
+    if (activeItem && !popup.contains(e.target as Node)) hidePopup();
+  });
+</script>
