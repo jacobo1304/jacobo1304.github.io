@@ -36,9 +36,6 @@ const technologies = [
             height="30"
             loading="lazy"
           />
-          <span class="text-lg font-medium text-[var(--white-icon)]">
-            {tech.label}
-          </span>
         </div>
       ))
     }
@@ -58,10 +55,10 @@ const technologies = [
     to   { transform: translateX(-33.333%); }
   }
   .animate-scroll {
-    animation: scroll 60s linear infinite;
+    animation: scroll 400s linear infinite;
   }
   @media (min-width: 768px) {
-    .animate-scroll { animation-duration: 50s; }
+    .animate-scroll { animation-duration: 30s; }
   }
 
   /* ── Popup ── */
