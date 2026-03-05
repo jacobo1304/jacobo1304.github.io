@@ -38,7 +38,7 @@ const navItems: NavItem[] = [
   >
     <div class="container mx-auto flex justify-center items-center p-3">
       <ul
-        class="flex w-full justify-between md:space-x-6 md:justify-center md:gap-12 gap-6"
+        class="flex w-full justify-between md:justify-center md:gap-8 gap-6"
       >
         {
           navItems.map((item) => (
@@ -47,12 +47,12 @@ const navItems: NavItem[] = [
                 href={item.href}
                 class="flex flex-col items-center gap-1 text-[var(--white-icon)] transition-colors text-xs md:text-base relative group"
               >
-                <div class="absolute -left-6 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full transition-all duration-300 scale-0 opacity-0 bg-[var(--sec)] nav-indicator hidden md:block" />
+                <!-- Eliminada la bolita naranja -->
                 <span class="md:hidden flex items-center justify-center w-6 h-6">
                   <fragment set:html={item.icon} />
                 </span>
-                <span class="hidden md:inline-block" data-i18n={item.i18nKey}>{item.label}</span>
-                <span class="md:hidden" data-i18n={item.i18nKey}>{item.label}</span>
+                <span class="hidden md:inline-block group-[.active]:text-[var(--sec)]" data-i18n={item.i18nKey}>{item.label}</span>
+                <span class="md:hidden group-[.active]:text-[var(--sec)]" data-i18n={item.i18nKey}>{item.label}</span>
               </a>
             </li>
           ))
@@ -95,13 +95,9 @@ const navItems: NavItem[] = [
     border-radius: 9999px;
   }
 
-  nav a.active .nav-indicator {
-    transform: translateY(-50%) scale(1);
-    opacity: 1;
-  }
-
   nav a.active {
-    color: white !important;
+    color: var(--sec) !important;
+    transition: color 0.3s cubic-bezier(0.4,0,0.2,1);
   }
 
   @media (max-width: 767px) {
@@ -138,7 +134,7 @@ const navItems: NavItem[] = [
       const scrollProgress = Math.min(window.scrollY / maxScroll, 1);
       const easeProgress = 1 - Math.pow(1 - scrollProgress, 4);
 
-      const minWidth = 528;
+      const minWidth = 500;
       const maxWidth = Math.min(window.innerWidth * 0.8, 600);
       const currentWidth = maxWidth - (maxWidth - minWidth) * easeProgress;
 
