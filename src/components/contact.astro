@@ -1,20 +1,20 @@
 <section id="contact" class="w-full py-12 border-t border-[#ffffff10]">
   <div class="max-w-5xl mx-auto">
-    <h2 class="text-lg text-[var(--sec)] mb-2 shiny-sec">Let's talk</h2>
-    <h3 class="text-4xl md:text-5xl font-medium text-[var(--white)] mb-6">
+    <h2 class="text-lg text-[var(--sec)] mb-2 shiny-sec" data-i18n="contact_eyebrow">Let's talk</h2>
+    <h3 class="text-4xl md:text-5xl font-medium text-[var(--white)] mb-6" data-i18n="contact_title">
       Contact
     </h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div class="text-[var(--white-icon)]">
-        <p class="mb-4">
+        <p class="mb-4" data-i18n="contact_desc">
           Have a question or a project in mind? Feel free to reach out.
         </p>
         <div class="flex items-center gap-2">
-          <span>Location:</span>
-          <span class="text-[var(--white)]">Colombia, Medellin, Antioquia </span>
+          <span data-i18n="contact_location_label">Location:</span>
+          <span class="text-[var(--white)]" data-i18n="contact_location_value">Colombia, Medellin, Antioquia </span>
         </div>
 
-        <div class="mt-5 rounded-2xl overflow-hidden border border-[var(--white-icon-tr)] bg-[#1414149c]">
+        <div class="mt-5 rounded-2xl overflow-hidden border border-[var(--white-icon-tr)] bg-[var(--btn-bg)]">
           <img
             src="/MiTrabajoConIA.png"
             alt="Mi trabajo con IA"
@@ -37,25 +37,29 @@
             name="from_name"
             placeholder="Name"
             required
-            class="px-4 py-2 bg-[#1414149c] text-[var(--white)] border border-[var(--white-icon-tr)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--sec)]"
+            data-i18n-placeholder="contact_placeholder_name"
+            class="px-4 py-2 bg-[var(--btn-bg)] text-[var(--white)] border border-[var(--white-icon-tr)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--sec)]"
           />
           <input
             type="email"
             name="reply_to"
             placeholder="Email"
             required
-            class="px-4 py-2 bg-[#1414149c] text-[var(--white)] border border-[var(--white-icon-tr)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--sec)]"
+            data-i18n-placeholder="contact_placeholder_email"
+            class="px-4 py-2 bg-[var(--btn-bg)] text-[var(--white)] border border-[var(--white-icon-tr)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--sec)]"
           />
           <textarea
             name="message"
             placeholder="Message"
             rows="6"
             required
-            class="px-4 py-2 bg-[#1414149c] text-[var(--white)] border border-[var(--white-icon-tr)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--sec)] resize-none"
+            data-i18n-placeholder="contact_placeholder_message"
+            class="px-4 py-2 bg-[var(--btn-bg)] text-[var(--white)] border border-[var(--white-icon-tr)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--sec)] resize-none"
           ></textarea>
           <button
             type="submit"
             class="px-4 py-2 bg-[var(--white-icon-tr)] text-[var(--white)] rounded-lg opacity-60 transition-opacity border border-[var(--white-icon-tr)] hover:opacity-100 hover:bg-[var(--white-icon-tr)]"
+            data-i18n="contact_submit"
           >
             Submit
           </button>
@@ -63,6 +67,7 @@
         <div
           id="form-message"
           class="hidden justify-center items-center mt-4 text-[var(--white)] text-lg"
+          data-i18n="contact_success"
         >
           ✅ Thank you for your message!
         </div>

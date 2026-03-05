@@ -1,6 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { translations, type Lang } from "../i18n/translations";
 
-const CategoryIcons = {
+type CategoryKey = "Games" | "Interactive Experiences" | "Music and SFX";
+
+const categoryKeys: CategoryKey[] = [
+  "Games",
+  "Interactive Experiences",
+  "Music and SFX",
+];
+
+const CategoryIcons: Record<CategoryKey, React.ReactNode> = {
   "Games": (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -41,57 +50,63 @@ const CategoryIcons = {
   ),
 };
 
+const imageSlotSrc: Record<CategoryKey, string> = {
+  "Games": "/Coding1.jpg",
+  "Interactive Experiences": "/FlockingInteractivo.png",
+  "Music and SFX": "/TocandoPiano.jpg",
+};
+
 const SkillsList = () => {
-  const [openItem, setOpenItem] = useState<string | null>(null);
+  const [openItem, setOpenItem] = useState<CategoryKey | null>(null);
+  const [lang, setLang] = useState<Lang>("en");
 
-  const skills = {
-    "Games": [
-      "Creation of 2D and 3D video games and playable prototypes, focused on Programming, and game design.",
-    ],
-    "Interactive Experiences": [
-      "Design and development of real-time interactive systems, generative visuals, and VR and AR experiences in unity.",
-    ],
-    "Music and SFX": [
-      "Sound design for games including foley recording and game OST composing and producing. Using tools as Reaper, VCV rack, and Sony Vegas/Premiere for video editing.",
-    ],
+  useEffect(() => {
+    const stored = (localStorage.getItem("lang") || "en") as Lang;
+    setLang(stored);
+
+    const handler = (e: Event) => {
+      setLang((e as CustomEvent<{ lang: Lang }>).detail.lang);
+    };
+    window.addEventListener("langchange", handler);
+    return () => window.removeEventListener("langchange", handler);
+  }, []);
+
+  const t = translations[lang];
+
+  const categoryLabels: Record<CategoryKey, string> = {
+    "Games": t.skills_games,
+    "Interactive Experiences": t.skills_interactive,
+    "Music and SFX": t.skills_music,
   };
 
-  const imageSlotLabels: Record<string, string> = {
-    "Games": "Image slot",
-    "Interactive Experiences":
-      "Image slot",
-    "Music and SFX": "Image slot",
+  const categoryDescs: Record<CategoryKey, string> = {
+    "Games": t.skills_games_desc,
+    "Interactive Experiences": t.skills_interactive_desc,
+    "Music and SFX": t.skills_music_desc,
   };
 
-  const imageSlotSrc: Record<string, string> = {
-    "Games": "/Coding1.jpg",
-    "Interactive Experiences":
-      "/FlockingInteractivo.png",
-    "Music and SFX": "/TocandoPiano.jpg",
-  };
-
-  const toggleItem = (item: string) => {
-    setOpenItem(openItem === item ? null : item);
+  const toggleItem = (key: CategoryKey) => {
+    setOpenItem(openItem === key ? null : key);
   };
 
   return (
     <div className="text-left pt-3 md:pt-9">
       <h3 className="text-[var(--white)] text-3xl md:text-4xl font-semibold md:mb-6">
-        What I build.
+        {t.skills_title}
       </h3>
       <ul className="space-y-4 mt-4 text-lg">
-        {Object.entries(skills).map(([category, items]) => (
-          <li key={category} className="w-full">
+        {categoryKeys.map((key) => (
+          <li key={key} className="w-full">
             <div
-              onClick={() => toggleItem(category)}
-              className="md:w-[400px] w-full bg-[#1414149c] rounded-2xl text-left hover:bg-opacity-80 transition-all border border-[var(--white-icon-tr)] cursor-pointer overflow-hidden"
+              onClick={() => toggleItem(key)}
+              className="md:w-[400px] w-full bg-[var(--btn-bg)] rounded-2xl text-left hover:bg-opacity-80 transition-all border border-[var(--white-icon-tr)] cursor-pointer overflow-hidden"
             >
               <div className="flex items-center gap-3 p-4">
-                {CategoryIcons[category]}
+                {CategoryIcons[key]}
                 <div className="flex items-center gap-2 flex-grow justify-between">
                   <div className="min-w-0 max-w-[200px] md:max-w-none overflow-hidden">
                     <span className="block truncate text-[var(--white)] text-lg">
-                      {category}
+                      {categoryLabels[key]}
                     </span>
                   </div>
                   <svg
@@ -99,7 +114,7 @@ const SkillsList = () => {
                     viewBox="0 0 24 24"
                     fill="currentColor"
                     className={`w-6 h-6 text-[var(--white)] transform transition-transform flex-shrink-0 ${
-                      openItem === category ? "rotate-180" : ""
+                      openItem === key ? "rotate-180" : ""
                     }`}
                   >
                     <path d="M11.9999 13.1714L16.9497 8.22168L18.3639 9.63589L11.9999 15.9999L5.63599 9.63589L7.0502 8.22168L11.9999 13.1714Z"></path>
@@ -109,26 +124,24 @@ const SkillsList = () => {
 
               <div
                 className={`transition-all duration-300 px-4 ${
-                  openItem === category
+                  openItem === key
                     ? "max-h-[900px] pb-4 opacity-100"
                     : "max-h-0 opacity-0"
                 }`}
               >
                 <ul className="space-y-2 text-[var(--white-icon)] text-sm">
-                  {items.map((item, index) => (
-                    <div key={index} className="flex items-center">
-                      <span className="pl-1">•</span>
-                      <li className="pl-3">{item}</li>
-                    </div>
-                  ))}
+                  <div className="flex items-center">
+                    <span className="pl-1">•</span>
+                    <li className="pl-3">{categoryDescs[key]}</li>
+                  </div>
                 </ul>
 
                 <div className="pt-3">
                   <div className="w-full h-40 md:h-48 rounded-xl border border-[var(--white-icon-tr)] bg-[#101010] overflow-hidden">
-                    {imageSlotSrc[category] ? (
+                    {imageSlotSrc[key] ? (
                       <img
-                        src={imageSlotSrc[category]}
-                        alt={category}
+                        src={imageSlotSrc[key]}
+                        alt={categoryLabels[key]}
                         className="w-full h-full object-cover"
                         loading="lazy"
                         decoding="async"
@@ -136,7 +149,7 @@ const SkillsList = () => {
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <span className="text-[var(--white-icon)] text-xs">
-                          {imageSlotLabels[category] ?? "Image slot"}
+                          Image slot
                         </span>
                       </div>
                     )}
