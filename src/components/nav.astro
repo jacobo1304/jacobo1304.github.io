@@ -45,6 +45,7 @@ const navItems: NavItem[] = [
             <li class="flex-1 md:flex-none">
               <a
                 href={item.href}
+                data-sfx="nav-jump"
                 class="flex flex-col items-center gap-1 text-[var(--white-icon)] transition-colors text-xs md:text-base relative group"
               >
                 <!-- Eliminada la bolita naranja -->
@@ -175,17 +176,22 @@ const navItems: NavItem[] = [
   document.addEventListener("DOMContentLoaded", () => {
     const sections = document.querySelectorAll("section[id]");
     const navLinks = document.querySelectorAll("nav a[href^='#']");
-    const observerOptions = { threshold: 0.6 };
+    const observerOptions = {
+      threshold: [0.2, 0.35, 0.5],
+      rootMargin: "-20% 0px -40% 0px",
+    };
+
+    const setActiveById = (id: string) => {
+      navLinks.forEach((link) => link.classList.remove("active"));
+      const activeLink = document.querySelector(`nav a[href="#${id}"]`);
+      if (activeLink) activeLink.classList.add("active");
+    };
 
     const observerCallback = (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          navLinks.forEach((link) => link.classList.remove("active"));
           const id = entry.target.getAttribute("id");
-          const activeLink = document.querySelector(`nav a[href="#${id}"]`);
-          if (activeLink) {
-            activeLink.classList.add("active");
-          }
+          if (id) setActiveById(id);
         }
       });
     };
@@ -195,6 +201,18 @@ const navItems: NavItem[] = [
       observerOptions
     );
     sections.forEach((section) => observer.observe(section));
+
+    if (window.scrollY < 8) {
+      setActiveById("home");
+    }
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (window.scrollY < 8) setActiveById("home");
+      },
+      { passive: true }
+    );
   });
 </script>
 
@@ -206,6 +224,6 @@ const navItems: NavItem[] = [
   }
 
   nav a.active {
-    color: white !important;
+    color: var(--sec) !important;
   }
 </style>

@@ -31,16 +31,21 @@ import SkillsList from "../React/SkillsList.tsx";
         </div>
 
         <div class="order-2 lg:order-1 flex flex-shrink-0">
-          <div
-            class="size-44 sm:size-52 md:size-56 lg:size-72 rounded-2xl overflow-hidden border border-[var(--white-icon-tr)] bg-[#1414149c] flex items-center justify-center"
-          >
-            <img
-              src="/pfp.png"
-              alt="Jacobo Rodriguez"
-              class="w-full h-full object-cover"
-              loading="eager"
-              decoding="async"
-            />
+          <div class="flex flex-col items-center">
+            <div
+              class="size-44 sm:size-52 md:size-56 lg:size-72 rounded-2xl overflow-hidden border border-[var(--white-icon-tr)] bg-[#1414149c] flex items-center justify-center"
+            >
+              <img
+                src="/pfp.png"
+                alt="Jacobo Rodríguez Guevara"
+                class="w-full h-full object-cover"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+            <p class="mt-3 text-[var(--white)] text-lg md:text-xl text-center font-medium">
+              Jacobo Rodríguez Guevara
+            </p>
           </div>
         </div>
       </div>
@@ -106,12 +111,6 @@ import SkillsList from "../React/SkillsList.tsx";
     <div class="flex flex-col lg:flex-row items-center lg:items-start gap-8">
       <SkillsList client:load />
       <div class="w-full max-w-[460px] pt-3 md:pt-9 md:ml-10">
-        <p
-          class="text-[var(--white)] text-xl md:text-2xl font-semibold mb-4 text-center"
-          data-i18n="home_trailer_title"
-        >
-          Mira mi trailer personal:
-        </p>
         <TrailerEmbed client:load />
       </div>
     </div>

@@ -16,9 +16,9 @@
 
         <div class="mt-5 rounded-2xl overflow-hidden border border-[var(--white-icon-tr)] bg-[var(--btn-bg)]">
           <img
-            src="/MiTrabajoConIA.png"
+            src="/FotoFooter.png"
             alt="Mi trabajo con IA"
-            class="w-full h-55 object-cover"
+            class="w-full h-[129px] md:h-[220px] lg:h-[240px] object-cover object-[center_38%]"
             loading="lazy"
             decoding="async"
           />
@@ -76,9 +76,15 @@
   </div>
 </section>
 
-<script type="module" is:inline>
-  const form = document.getElementById("contact-form");
-  const formMessage = document.getElementById("form-message");
+<script>
+  import { playVictory } from "../lib/sfx";
+
+  const form = document.getElementById("contact-form") as HTMLFormElement | null;
+  const formMessage = document.getElementById("form-message") as HTMLElement | null;
+
+  if (!form || !formMessage) {
+    throw new Error("Contact form elements were not found.");
+  }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -94,6 +100,7 @@
         form.reset();
         form.style.display = "none";
         formMessage.classList.remove("hidden");
+        playVictory();
       } else {
         const data = await response.json();
         console.error("Error response:", data);

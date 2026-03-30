@@ -15,6 +15,10 @@ export const translations: Record<Lang, Record<string, string>> = {
     home_hero_desc:
       'I design and develop games and interactive systems where <span class="text-[var(--sec)] shiny-sec">code, sound, and design</span> work together to create <span class="text-[var(--sec)] shiny-sec">meaningful experiences</span>.',
     home_trailer_title: "Watch my personal trailer:",
+    home_trailer_title_locked: "Shoot the aliens to unlock my trailer",
+    home_trailer_title_unlocked: "Congratulations, you unlocked my trailer",
+    home_trailer_restart: "Restart",
+    home_trailer_skip: "Skip",
 
     // skills (used by SkillsList.tsx)
     skills_title: "What I build.",
@@ -70,6 +74,10 @@ export const translations: Record<Lang, Record<string, string>> = {
     home_hero_desc:
       'Diseño y desarrollo juegos y sistemas interactivos donde <span class="text-[var(--sec)] shiny-sec">código, sonido y diseño</span> trabajan juntos para crear <span class="text-[var(--sec)] shiny-sec">experiencias significativas</span>.',
     home_trailer_title: "Mira mi trailer personal:",
+    home_trailer_title_locked: "Dispara a los aliens para desbloquear mi trailer",
+    home_trailer_title_unlocked: "Felicidades, desbloqueaste mi trailer",
+    home_trailer_restart: "Reiniciar",
+    home_trailer_skip: "Saltar",
 
     // skills
     skills_title: "Lo que hago.",

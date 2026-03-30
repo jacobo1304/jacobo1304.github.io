@@ -99,6 +99,7 @@ const SkillsList = () => {
           <li key={key} className="w-full">
             <div
               onClick={() => toggleItem(key)}
+              data-sfx="ui-button"
               className="md:w-[400px] w-full bg-[var(--btn-bg)] rounded-2xl text-left hover:bg-opacity-80 transition-all border border-[var(--white-icon-tr)] cursor-pointer overflow-hidden"
             >
               <div className="flex items-center gap-3 p-4">
