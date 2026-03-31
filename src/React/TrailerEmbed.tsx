@@ -15,42 +15,52 @@ const videos: Record<Lang, string> = {
 const STORAGE_KEY = "victoryUnlocked";
 const ALIENS_TO_UNLOCK = 3;
 const ALIEN_SIZE = 58;
+const ALIEN_HITBOX_SIZE = 90;
+const CURSOR_SIZE = 44;
+const ALIEN_BASE_SPEED = 0.8;
+const ALIEN_SPEED_VARIATION = 0.1;
+const ALIEN_SPEED_STEP = 0.5;
 
 type AlienState = {
   id: number;
   x: number;
   y: number;
+  vx: number;
+  vy: number;
   fading: boolean;
 };
 
 type UnlockMode = "locked" | "default" | "victory";
 
 function AlienSprite({
+  id,
   x,
   y,
   fading,
   onHit,
 }: {
+  id: number;
   x: number;
   y: number;
   fading: boolean;
-  onHit: () => void;
+  onHit: (id: number) => void;
 }) {
   return (
     <button
       type="button"
-      onClick={onHit}
-      className={`absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-200 ${
-        fading ? "opacity-0 scale-75" : "opacity-100 scale-100 hover:scale-105"
+      onClick={() => onHit(id)}
+      className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center ${
+        fading ? "opacity-0 scale-75 transition-all duration-200" : "opacity-100 scale-100"
       }`}
-      style={{ left: `${x}px`, top: `${y}px`, width: ALIEN_SIZE, height: ALIEN_SIZE }}
+      style={{ left: `${x}px`, top: `${y}px`, width: ALIEN_HITBOX_SIZE, height: ALIEN_HITBOX_SIZE }}
       aria-label="Alien target"
       data-sfx="off"
     >
       <svg
         viewBox="0 0 17 17"
         xmlns="http://www.w3.org/2000/svg"
-        className="h-full w-full drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)]"
+        className="drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)]"
+        style={{ width: `${ALIEN_SIZE}px`, height: `${ALIEN_SIZE}px` }}
         fill="currentColor"
       >
         <path
@@ -69,11 +79,15 @@ const TrailerEmbed = () => {
   const [unlockMode, setUnlockMode] = useState<UnlockMode>("locked");
   const [showLockPanel, setShowLockPanel] = useState(true);
   const [isPanelFading, setIsPanelFading] = useState(false);
-  const [alien, setAlien] = useState<AlienState | null>(null);
+  const [aliens, setAliens] = useState<AlienState[]>([]);
 
   const gameAreaRef = useRef<HTMLDivElement | null>(null);
   const timeoutRefs = useRef<number[]>([]);
   const alienIdRef = useRef(0);
+  const animFrameRef = useRef<number | null>(null);
+  const speedMultiplierRef = useRef(1);
+  const pendingHitIdsRef = useRef<Set<number>>(new Set());
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0, visible: false });
 
   const t = translations[lang];
 
@@ -82,15 +96,12 @@ const TrailerEmbed = () => {
   };
 
   const playShotPlaceholder = () => {
-    playLaserShot();
+    const rate = 0.92 + Math.random() * 0.2;
+    playLaserShot(rate);
   };
 
   const playVictoryPlaceholder = () => {
     playVictory();
-  };
-
-  const playSpawnPlaceholder = () => {
-    // Placeholder reservado para un tercer SFX (spawn) en el siguiente paso.
   };
 
   const playAlienDeathPlaceholder = () => {
@@ -113,8 +124,10 @@ const TrailerEmbed = () => {
     return t.home_trailer_title;
   }, [showLockPanel, t, unlockMode]);
 
-  const spawnAlien = useCallback(() => {
+  const spawnAliens = useCallback(() => {
     if (!showLockPanel) return;
+    speedMultiplierRef.current = 1;
+    pendingHitIdsRef.current.clear();
 
     const area = gameAreaRef.current;
     if (!area) return;
@@ -123,24 +136,50 @@ const TrailerEmbed = () => {
     if (rect.width === 0 || rect.height === 0) return;
 
     const half = ALIEN_SIZE / 2;
-    const edgePadding = 18;
 
-    const minX = half + edgePadding;
-    const maxX = Math.max(minX, rect.width - half - edgePadding);
-    const minY = half + edgePadding;
-    const maxY = Math.max(minY, rect.height - half - edgePadding);
+    const minX = half;
+    const maxX = Math.max(minX, rect.width - half);
+    const minY = half;
+    const maxY = Math.max(minY, rect.height - half);
 
-    const x = minX + Math.random() * (maxX - minX || 1);
-    const y = minY + Math.random() * (maxY - minY || 1);
+    const nextAliens: AlienState[] = [];
+    const minDist = ALIEN_SIZE + 12;
+    let attempts = 0;
 
-    alienIdRef.current += 1;
-    setAlien({ id: alienIdRef.current, x, y, fading: false });
-    playSpawnPlaceholder();
+    while (nextAliens.length < ALIENS_TO_UNLOCK && attempts < 200) {
+      attempts += 1;
+      const x = minX + Math.random() * (maxX - minX || 1);
+      const y = minY + Math.random() * (maxY - minY || 1);
+
+      const overlaps = nextAliens.some((a) => {
+        const dx = a.x - x;
+        const dy = a.y - y;
+        return Math.hypot(dx, dy) < minDist;
+      });
+      if (overlaps) continue;
+
+      const speed =
+        (ALIEN_BASE_SPEED + (Math.random() * 2 - 1) * ALIEN_SPEED_VARIATION) *
+        speedMultiplierRef.current;
+      const angle = Math.random() * Math.PI * 2;
+
+      alienIdRef.current += 1;
+      nextAliens.push({
+        id: alienIdRef.current,
+        x,
+        y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        fading: false,
+      });
+    }
+
+    setAliens(nextAliens);
   }, [showLockPanel]);
 
   const completeVictory = useCallback(() => {
     setUnlockMode("victory");
-    setAlien(null);
+    setAliens([]);
     setIsPanelFading(true);
     playVictoryPlaceholder();
     localStorage.setItem(STORAGE_KEY, "true");
@@ -152,27 +191,48 @@ const TrailerEmbed = () => {
     registerTimeout(fadeTimeout);
   }, []);
 
-  const handleAlienHit = useCallback(() => {
-    setAlien((current) => {
-      if (!current || current.fading) return current;
-      playShotPlaceholder();
-      return { ...current, fading: true };
-    });
+  const handleAlienHit = useCallback((id: number) => {
+    if (pendingHitIdsRef.current.has(id)) return;
+
+    const target = aliens.find((alien) => alien.id === id && !alien.fading);
+    if (!target) return;
+
+    pendingHitIdsRef.current.add(id);
+
+    setAliens((current) =>
+      current.map((alien) => {
+        if (alien.id !== id || alien.fading) return alien;
+        return { ...alien, fading: true, vx: 0, vy: 0 };
+      }),
+    );
 
     const hitTimeout = window.setTimeout(() => {
+      setAliens((current) => {
+        const next = current.filter((alien) => alien.id !== id);
+        speedMultiplierRef.current *= ALIEN_SPEED_STEP;
+
+        return next.map((alien) =>
+          alien.fading
+            ? alien
+            : {
+                ...alien,
+                vx: alien.vx * ALIEN_SPEED_STEP,
+                vy: alien.vy * ALIEN_SPEED_STEP,
+              },
+        );
+      });
+
       playAlienDeathPlaceholder();
       setScore((prev) => {
         const next = Math.min(prev + 1, ALIENS_TO_UNLOCK);
         if (next >= ALIENS_TO_UNLOCK) {
           completeVictory();
-        } else {
-          spawnAlien();
         }
         return next;
       });
     }, 190);
     registerTimeout(hitTimeout);
-  }, [completeVictory, spawnAlien]);
+  }, [aliens, completeVictory]);
 
   const handleRestart = useCallback(() => {
     playGenericButtonPlaceholder();
@@ -182,7 +242,7 @@ const TrailerEmbed = () => {
 
   const handleSkip = useCallback(() => {
     playGenericButtonPlaceholder();
-    setAlien(null);
+    setAliens([]);
     setShowLockPanel(false);
     setIsPanelFading(false);
     setUnlockMode("default");
@@ -215,12 +275,106 @@ const TrailerEmbed = () => {
   }, []);
 
   useEffect(() => {
-    if (!showLockPanel || alien) return;
+    if (!showLockPanel || score > 0 || aliens.length > 0) return;
     const spawnTimeout = window.setTimeout(() => {
-      spawnAlien();
+      spawnAliens();
     }, 80);
     registerTimeout(spawnTimeout);
-  }, [alien, showLockPanel, spawnAlien]);
+  }, [aliens.length, score, showLockPanel, spawnAliens]);
+
+  useEffect(() => {
+    if (!showLockPanel || aliens.length === 0) return;
+
+    const tick = () => {
+      const area = gameAreaRef.current;
+      if (!area) {
+        animFrameRef.current = null;
+        return;
+      }
+
+      const rect = area.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) {
+        animFrameRef.current = window.requestAnimationFrame(tick);
+        return;
+      }
+
+      const half = ALIEN_SIZE / 2;
+      const minX = half;
+      const maxX = Math.max(minX, rect.width - half);
+      const minY = half;
+      const maxY = Math.max(minY, rect.height - half);
+
+      setAliens((current) => {
+        if (current.length === 0) return current;
+
+        const next = current.map((alien) => {
+          if (alien.fading) return alien;
+
+          let nextX = alien.x + alien.vx;
+          let nextY = alien.y + alien.vy;
+          let nextVx = alien.vx;
+          let nextVy = alien.vy;
+
+          if (nextX <= minX || nextX >= maxX) {
+            nextVx = -nextVx;
+            nextX = Math.min(Math.max(nextX, minX), maxX);
+          }
+          if (nextY <= minY || nextY >= maxY) {
+            nextVy = -nextVy;
+            nextY = Math.min(Math.max(nextY, minY), maxY);
+          }
+
+          return { ...alien, x: nextX, y: nextY, vx: nextVx, vy: nextVy };
+        });
+
+        const minDist = ALIEN_SIZE;
+
+        for (let i = 0; i < next.length; i += 1) {
+          if (next[i].fading) continue;
+          for (let j = i + 1; j < next.length; j += 1) {
+            if (next[j].fading) continue;
+
+            const dx = next[j].x - next[i].x;
+            const dy = next[j].y - next[i].y;
+            const dist = Math.hypot(dx, dy);
+            if (dist >= minDist) continue;
+
+            const nx = dist === 0 ? 1 : dx / dist;
+            const ny = dist === 0 ? 0 : dy / dist;
+
+            const v1n = next[i].vx * nx + next[i].vy * ny;
+            const v2n = next[j].vx * nx + next[j].vy * ny;
+
+            next[i].vx += (v2n - v1n) * nx;
+            next[i].vy += (v2n - v1n) * ny;
+            next[j].vx += (v1n - v2n) * nx;
+            next[j].vy += (v1n - v2n) * ny;
+
+            const overlap = minDist - dist;
+            if (overlap > 0) {
+              next[i].x -= nx * (overlap / 2);
+              next[i].y -= ny * (overlap / 2);
+              next[j].x += nx * (overlap / 2);
+              next[j].y += ny * (overlap / 2);
+            }
+          }
+        }
+
+        return next;
+      });
+
+      animFrameRef.current = window.requestAnimationFrame(tick);
+    };
+
+    animFrameRef.current = window.requestAnimationFrame(tick);
+
+    return () => {
+      if (animFrameRef.current !== null) {
+        window.cancelAnimationFrame(animFrameRef.current);
+        animFrameRef.current = null;
+      }
+    };
+  }, [aliens.length, showLockPanel]);
 
   return (
     <div className="w-full" data-sfx="off">
@@ -276,7 +430,21 @@ const TrailerEmbed = () => {
               isPanelFading ? "opacity-0 pointer-events-none" : "opacity-100"
             }`}
             style={{
-              cursor: "url('/assets/target-crosshair.png') 16 16, crosshair",
+              cursor: "none",
+            }}
+            onPointerMove={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect();
+              setMousePos({
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top,
+                visible: true,
+              });
+            }}
+            onPointerEnter={() => {
+              setMousePos((prev) => ({ ...prev, visible: true }));
+            }}
+            onPointerLeave={() => {
+              setMousePos((prev) => ({ ...prev, visible: false }));
             }}
           >
             <div
@@ -294,17 +462,38 @@ const TrailerEmbed = () => {
               {`${score}/${ALIENS_TO_UNLOCK}`}
             </div>
 
-            <div ref={gameAreaRef} className="absolute inset-0 overflow-hidden">
-              {alien && (
+            <div
+              ref={gameAreaRef}
+              className="absolute inset-0 overflow-hidden"
+              onClick={playShotPlaceholder}
+            >
+                {aliens.map((alien) => (
                 <AlienSprite
                   key={alien.id}
+                    id={alien.id}
                   x={alien.x}
                   y={alien.y}
                   fading={alien.fading}
                   onHit={handleAlienHit}
                 />
-              )}
+                ))}
             </div>
+
+            {mousePos.visible && (
+              <img
+                src="/assets/target-crosshair.png"
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none absolute z-30"
+                style={{
+                  left: `${mousePos.x}px`,
+                  top: `${mousePos.y}px`,
+                  width: `${CURSOR_SIZE}px`,
+                  height: `${CURSOR_SIZE}px`,
+                  transform: "translate(-50%, -50%)",
+                }}
+              />
+            )}
           </div>
         )}
       </div>

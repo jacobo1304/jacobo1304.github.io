@@ -54,11 +54,21 @@ function play(key: SfxKey) {
   sounds[key].play();
 }
 
+function playWithRate(key: SfxKey, rate: number) {
+  if (!sfxEnabled) return;
+  const id = sounds[key].play();
+  sounds[key].rate(Math.min(Math.max(rate, 0.5), 2), id);
+}
+
 export function playClick() {
   play("click");
 }
 
-export function playLaserShot() {
+export function playLaserShot(rate?: number) {
+  if (typeof rate === "number") {
+    playWithRate("lasershot", rate);
+    return;
+  }
   play("lasershot");
 }
 
